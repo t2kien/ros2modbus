@@ -33,7 +33,7 @@ class ModbusSubscriber : public rclcpp::Node
       // connect with the server
       mb.modbus_connect();
       //enable AGV
-      uint16_t status;
+      int status;
       status = Write_Enable_AGV(1);
       if (status == BAD_CON)
           RCLCPP_INFO(this->get_logger(), "AGV-Enable: Could not connect to device");
@@ -48,7 +48,7 @@ class ModbusSubscriber : public rclcpp::Node
     ~ModbusSubscriber() 
     {
        //disable AGV
-       uint16_t status;
+       int status;
        status = Write_Enable_AGV(0);
        if (status == BAD_CON)
           RCLCPP_INFO(this->get_logger(), "AGV-Disable: Could not connect to device");
@@ -58,7 +58,7 @@ class ModbusSubscriber : public rclcpp::Node
     void topic_callback(const geometry_msgs::msg::Twist::SharedPtr msg) //const    
     {
     
-      uint16_t status;
+      int status;
       uint16_t Start;
       uint16_t LeftSpeed;
       uint16_t RightSpeed;
@@ -92,14 +92,14 @@ class ModbusSubscriber : public rclcpp::Node
     uint16_t Write_Speed_AGV(uint16_t leftSp, uint16_t rightSp, uint16_t Start) 
     {
         uint16_t tbl_data[3] = {leftSp, rightSp, Start};//start=1 AGV Run; =0 AGV Stop
-        uint16_t status;
+        int status;
         status = mb.modbus_write_registers(SpeedAddress, 3, tbl_data);
         return status;
     }
     //Enable AGV
     uint16_t Write_Enable_AGV(uint16_t AGV_Enable) 
     {
-        uint16_t status;
+        int status;
         status =mb.modbus_write_register(Enable_Adr, AGV_Enable);
         return status;
     }
